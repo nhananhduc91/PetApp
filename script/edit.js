@@ -19,6 +19,30 @@ const sterilizedInput = document.getElementById('input-sterilized');
 
 //Execute render pet list
 let petArr = getFromStorage('petData') ? JSON.parse(getFromStorage('petData')) : [];
+let petArrImport = JSON.parse(getFromStorage('petDataImport'));
+
+//Check if any item of import array is unique
+function checkUniqueIdImport(petId) {
+  let checkUniqueId = true;
+  for (let pet of petArr) {
+    if (pet.id === petId) {
+      checkUniqueId = false;
+    }
+  }
+  return checkUniqueId;
+}
+
+//If unique, add to petArr
+for (let petImport of petArrImport) {
+  if (checkUniqueIdImport(petImport.id)) {
+    petArr.push(petImport);
+  } else {
+    //Replace pet with the same Id
+    const index = petArr.findIndex(pet => pet.id === petImport.id)
+    petArr[index] = petImport;
+  }
+}
+
 renderEditTableData(petArr);
 
 //Filter breed by type
