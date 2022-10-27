@@ -115,7 +115,7 @@ submitBtn.addEventListener('click', function (e) {
     } else {
       //Validate unique Id
       for (const pet of petArr) {
-        if (pet.id === data.id) {
+        if (pet.id.trim() === data.id.trim()) {
           checkValidated = false;
           alert('Id must be unique!');
         }
@@ -176,7 +176,7 @@ function renderTableData(petArr) {
         <td>${pet.weight} kg</td>
         <td>${pet.length} cm</td>
         <td>${pet.breed}</td>
-        <td><i class="bi bi-square-fill" style={{color: ${pet.color}}}></i></td>
+        <td><i class="bi bi-square-fill" style="color: ${pet.color};"></i></td>
         <td>${pet.vaccinated === true ? `<i class="bi bi-check-circle-fill"></i>` : `<i class="bi bi-x-circle-fill"></i>`}</td >
         <td>${pet.dewormed === true ? `<i class="bi bi-check-circle-fill"></i>` : `<i class="bi bi-x-circle-fill"></i>`}</td>
         <td>${pet.sterilized === true ? `<i class="bi bi-check-circle-fill"></i>` : `<i class="bi bi-x-circle-fill"></i>`}</td>
