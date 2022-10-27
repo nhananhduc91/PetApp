@@ -60,13 +60,13 @@
 						Search
 					</a>
 				</li>
-				<li class="active">
+				<li class="">
 					<a href="./breed.html">
 						<i class="bi bi-list-ul"></i>
 						Breed
 					</a>
 				</li>
-				<li class="">
+				<li class="active">
 					<a href="./data.html">
 						<i class="bi bi-clipboard-data"></i>
 						Data
@@ -79,7 +79,7 @@
 		<div id="content">
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
 				<div class="container-fluid">
-					<a class="navbar-brand" href="#">Breed Management</a>
+					<a class="navbar-brand" href="#">Import / Export Data</a>
 				</div>
 			</nav>
 			<div class="container" id="main">
@@ -87,45 +87,19 @@
 					<div class="col-lg-6 col-lg-offset-4">
 						<form>
 							<div class="form-group row mb-3">
-								<label for="input-id" class="col-sm-3 col-form-label">Breed ID</label>
+								<label for="input-id" class="col-sm-3 col-form-label">File source</label>
 								<div class="col-sm-9">
-									<input type="text" class="form-control" id="breed-id" placeholder="Input Breed ID">
+									<input type="file" class="form-control" id="input-file" accept=".json">
 								</div>
 							</div>
-							<div class="form-group row mb-3">
-								<label for="input-id" class="col-sm-3 col-form-label">Breed Name</label>
-								<div class="col-sm-9">
-									<input type="text" class="form-control" id="add-breed" placeholder="Input Breed Name">
-								</div>
-							</div>
-							<div class="form-group row mb-3">
-								<label for="input-type" class="col-sm-3 col-form-label">Type</label>
-								<div class="col-sm-9">
-									<select class="form-control" id="select-type">
-										<option value="" disabled selected>Select Type</option>
-										<option>Dog</option>
-										<option>Cat</option>
-									</select>
-								</div>
-							</div>
-							<button type="submit" class="btn btn-primary" id="submit-breed">Submit</button>
+							<button type="button" class="btn btn-primary" id="import-btn">Import Data</button>
+							<button type="button" class="btn btn-primary" id="export-btn">Export Data</button>
 						</form>
 					</div>
 				</div>
-			</div>
-			<div class="container">
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th scope="col">ID</th>
-							<th scope="col">Breed</th>
-							<th scope="col">Type</th>
-							<th scope="col">Action</th>
-						</tr>
-					</thead>
-					<tbody id="breedTable">
-					</tbody>
-				</table>
+				<div>
+					<p id="file-content"></p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -134,9 +108,23 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
 		</script>
-
 	<script src="../script/storage.js"></script>
-	<script src="../script/breed.js"></script>
+	<script type="module" src="../script/data.js"></script>
+	<script src="../script/FileSaver.js"></script>
+	<script>
+		// Get pet list
+		let petArr = getFromStorage('petData') ? JSON.parse(getFromStorage('petData')) : [];
+		let petArrText = JSON.stringify(petArr);
+
+		//Export file
+		function savePetArrToFile() {
+			let petData = new Blob([petArrText], { type: "text/plain; charset=utf-8" });
+			saveAs(petData, 'petData.txt');
+		}
+
+		const exportBtn = document.getElementById('export-btn');
+		exportBtn.addEventListener('click', savePetArrToFile);
+	</script>
 </body>
 
 </html>

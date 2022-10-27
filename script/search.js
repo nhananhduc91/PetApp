@@ -11,7 +11,7 @@ const sterilizedInput = document.getElementById('input-sterilized');
 const tableBodyEl = document.getElementById('tbody');
 
 
-//get pet list
+//Get pet list
 let petArr = getFromStorage('petData') ? JSON.parse(getFromStorage('petData')) : [];
 renderTableData(petArr);
 
@@ -39,13 +39,18 @@ findBtn.addEventListener('click', function () {
     && typeInput.value === ''
     && breedInput.value === '';
 
-  //Loop array and have 6 cases for user to choose
-  for (const pet of petArr) {
-    //Case 1: Search by id, name, type, breed, no tick checkbox
-    if (pet.id.includes(idInput.value.trim())
+  //Condition when user input name, type, id, breed
+  const checkSearchIncludeCheckBox = function (pet) {
+    return pet.id.includes(idInput.value.trim())
       && pet.name.toLowerCase().includes(nameInput.value.trim().toLowerCase())
       && pet.type.includes(typeInput.value)
       && pet.breed.includes(breedInput.value)
+  };
+
+  //Loop array and have 9 cases for user to choose
+  for (const pet of petArr) {
+    //Case 1: Search by id, name, type, breed, no tick checkbox
+    if (checkSearchIncludeCheckBox(pet)
       && vaccinatedInput.checked === false
       && dewormedInput.checked === false
       && sterilizedInput.checked === false
@@ -53,7 +58,16 @@ findBtn.addEventListener('click', function () {
       petSearched.push(pet);
     }
 
-    //Case 1: Search by tick vaccinated and dewormed and sterilized
+    //Case 2: Search by id, name, type, breed, and tick checkbox exactly
+    else if (checkSearchIncludeCheckBox(pet)
+      && vaccinatedInput.checked === pet.vaccinated
+      && dewormedInput.checked === pet.dewormed
+      && sterilizedInput.checked === pet.sterilized
+    ) {
+      petSearched.push(pet);
+    }
+
+    //Case 3: Search by tick vaccinated and dewormed and sterilized
     else if (checkSearchOnlyCheckBox
       && vaccinatedInput.checked === true
       && pet.vaccinated === true
@@ -65,7 +79,7 @@ findBtn.addEventListener('click', function () {
       petSearched.push(pet);
     }
 
-    //Case 1: Search by tick vaccinated and dewormed
+    //Case 4: Search by tick vaccinated and dewormed
     else if (checkSearchOnlyCheckBox
       && vaccinatedInput.checked === true
       && pet.vaccinated === true
@@ -76,7 +90,7 @@ findBtn.addEventListener('click', function () {
       petSearched.push(pet);
     }
 
-    //Case 2: Search by tick vaccinated and sterilized
+    //Case 5: Search by tick vaccinated and sterilized
     else if (checkSearchOnlyCheckBox
       && vaccinatedInput.checked === true
       && pet.vaccinated === true
@@ -87,7 +101,7 @@ findBtn.addEventListener('click', function () {
       petSearched.push(pet);
     }
 
-    //Case 3: Search by tick dewormed and sterilized
+    //Case 6: Search by tick dewormed and sterilized
     else if (checkSearchOnlyCheckBox
       && dewormedInput.checked === true
       && pet.dewormed === true
@@ -98,7 +112,7 @@ findBtn.addEventListener('click', function () {
       petSearched.push(pet);
     }
 
-    //Case 4: Search by tick vaccinated only
+    //Case 7: Search by tick vaccinated only
     else if (checkSearchOnlyCheckBox
       && vaccinatedInput.checked === true
       && dewormedInput.checked === false
@@ -108,7 +122,16 @@ findBtn.addEventListener('click', function () {
       petSearched.push(pet);
     }
 
-    //Case 5: Search by tick dewormed only
+    else if (checkSearchOnlyCheckBox
+      && vaccinatedInput.checked === true
+      && dewormedInput.checked === false
+      && sterilizedInput.checked === false
+      && pet.vaccinated === true
+    ) {
+      petSearched.push(pet);
+    }
+
+    //Case 8: Search by tick dewormed only
     else if (checkSearchOnlyCheckBox
       && vaccinatedInput.checked === false
       && dewormedInput.checked === true
@@ -118,7 +141,7 @@ findBtn.addEventListener('click', function () {
       petSearched.push(pet);
     }
 
-    //Case 6: Search by tick sterilized only
+    //Case 9: Search by tick sterilized only
     else if (checkSearchOnlyCheckBox
       && vaccinatedInput.checked === false
       && dewormedInput.checked === false
