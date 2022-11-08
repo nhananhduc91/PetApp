@@ -7,3 +7,7 @@ function getFromStorage(key) {
   return localStorage.getItem(key);
 }
 
+function removeFromStorage(key) {
+  return localStorage.removeItem(key);
+}
+

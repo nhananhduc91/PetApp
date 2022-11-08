@@ -19,7 +19,7 @@ const sterilizedInput = document.getElementById('input-sterilized');
 
 //Execute render pet list
 let petArr = getFromStorage('petData') ? JSON.parse(getFromStorage('petData')) : [];
-let petArrImport = JSON.parse(getFromStorage('petDataImport'));
+let petArrImport = JSON.parse(getFromStorage('petDataImport')) || [];
 
 //Check if any item of import array is unique
 function checkUniqueIdImport(petId) {
@@ -30,23 +30,27 @@ function checkUniqueIdImport(petId) {
     }
   }
   return checkUniqueId;
-}
+};
 
 //If unique, add to petArr
 for (let petImport of petArrImport) {
   if (checkUniqueIdImport(petImport.id)) {
     petArr.push(petImport);
+    saveToStorage('petData', JSON.stringify(petArr));
+    removeFromStorage('petDataImport');
   } else {
     //Replace pet with the same Id
     const index = petArr.findIndex(pet => pet.id === petImport.id)
     petArr[index] = petImport;
+    saveToStorage('petData', JSON.stringify(petArr));
+    removeFromStorage('petDataImport');
   }
 }
 
 renderEditTableData(petArr);
 
 //Filter breed by type
-let breedList = getFromStorage('breedData') ? JSON.parse(getFromStorage('breedData')) : [];
+let breedList = getFromStorage('breedData') ? JSON.parse(getFromStorage('breedData')) : [{ id: "1", name: "Dog 1", type: "Dog" }, { id: "2", name: "Cat 1", type: "Cat" }];
 const breedDog = breedList.filter(breed => breed.type === 'Dog');
 const breedCat = breedList.filter(breed => breed.type === 'Cat');
 
@@ -78,7 +82,6 @@ function renderEditTableData(petArr) {
   for (const pet of petArr) {
     const row = document.createElement('tr');
     row.innerHTML = `
-        <tr>
         <th>${pet.id}</th>
         <td>${pet.name}</td>
         <td>${pet.age}</td>
@@ -93,7 +96,6 @@ function renderEditTableData(petArr) {
         <td>${pet.date}</td>
         <td><button id="delete-btn" type="button" class="btn btn-warning" onclick="startEditPet('${pet.id}')">Edit</button>
         </td>
-        </tr >
         `
     editTableEl.appendChild(row);
   }
@@ -115,98 +117,74 @@ function startEditPet(petId) {
   weightInput.value = petEdit.weight;
   lengthInput.value = petEdit.length;
   colorInput.value = petEdit.color;
-  renderBreedList();
   breedInput.value = petEdit.breed;
   vaccinatedInput.checked = petEdit.vaccinated;
   dewormedInput.checked = petEdit.dewormed;
   sterilizedInput.checked = petEdit.sterilized;
-
-  //Edit pet
-  nameInput.addEventListener('input', function () {
-    petEdit.name = nameInput.value;
-  });
-
-  ageInput.addEventListener('input', function () {
-    petEdit.age = ageInput.value;
-  });
-  typeInput.addEventListener('input', function () {
-    petEdit.type = typeInput.value;
-  });
-  weightInput.addEventListener('input', function () {
-    petEdit.weight = weightInput.value;
-  });
-  lengthInput.addEventListener('input', function () {
-    petEdit.length = lengthInput.value;
-  });
-  colorInput.addEventListener('input', function () {
-    petEdit.color = colorInput.value;
-  });
-  breedInput.addEventListener('input', function () {
-    petEdit.breed = breedInput.value;
-  });
-
-  vaccinatedInput.addEventListener('input', function () {
-    petEdit.vaccinated = vaccinatedInput.checked;
-  });
-  dewormedInput.addEventListener('input', function () {
-    petEdit.dewormed = dewormedInput.checked;
-  });
-  sterilizedInput.addEventListener('input', function () {
-    petEdit.sterilized = sterilizedInput.checked;
-  });
+  renderBreedList();
 
   //Submit edit
-  submitBtn.addEventListener('click', function (e) {
+  submitBtn.onclick = function updatePet(e) {
     e.preventDefault();
 
     //Validation input data
-    const validation = function (petEdit) {
-      let checkValidated = true;
-      //Check empty input field
-      if (petEdit.name.trim() === '' || petEdit.age === '' || petEdit.type === '' || petEdit.weight === ''
-        || petEdit.length === '' || petEdit.color === '' || petEdit.breed === '') {
+    let checkValidated = true;
+    //Check empty input field
+    if (petEdit.name.trim() === '' || petEdit.age === '' || petEdit.type === '' || petEdit.weight === ''
+      || petEdit.length === '' || petEdit.color === '' || petEdit.breed === '') {
+      checkValidated = false;
+      alert('Input field must not be empty!')
+    } else {
+
+      //Validate age
+      if (petEdit.age < 1 || petEdit.age > 15) {
         checkValidated = false;
-        alert('Input field must not be empty!')
-      } else {
-
-        //Validate age
-        if (petEdit.age < 1 || petEdit.age > 15) {
-          checkValidated = false;
-          alert('Age must be between 1 and 15');
-        }
-
-        //Validate weight
-        if (petEdit.weight < 1 || petEdit.weight > 15) {
-          checkValidated = false;
-          alert('Weight must be between 1 and 15');
-        }
-
-        //Validate length
-        if (petEdit.length < 1 || petEdit.length > 100) {
-          checkValidated = false;
-          alert('Length must be between 1 and 15');
-        }
-
-        //Validate type
-        if (petEdit.type === '') {
-          checkValidated = false;
-          alert('Please select Type!');
-        }
-
-        //Validate breed
-        if (petEdit.breed === '') {
-          checkValidated = false;
-          alert('Please select Breed!');
-        }
+        alert('Age must be between 1 and 15');
       }
-      return checkValidated;
+
+      //Validate weight
+      if (petEdit.weight < 1 || petEdit.weight > 15) {
+        checkValidated = false;
+        alert('Weight must be between 1 and 15');
+      }
+
+      //Validate length
+      if (petEdit.length < 1 || petEdit.length > 100) {
+        checkValidated = false;
+        alert('Length must be between 1 and 15');
+      }
+
+      //Validate type
+      if (petEdit.type === '') {
+        checkValidated = false;
+        alert('Please select Type!');
+      }
+
+      //Validate breed
+      if (petEdit.breed === '') {
+        checkValidated = false;
+        alert('Please select Breed!');
+      }
     }
-    if (validation(petEdit)) {
+
+    if (checkValidated) {
+      petEdit.name = nameInput.value;
+      petEdit.age = ageInput.value;
+      petEdit.type = typeInput.value;
+      petEdit.weight = weightInput.value;
+      petEdit.length = lengthInput.value;
+      petEdit.color = colorInput.value;
+      petEdit.breed = breedInput.value;
+      petEdit.vaccinated = vaccinatedInput.checked;
+      petEdit.dewormed = dewormedInput.checked;
+      petEdit.sterilized = sterilizedInput.checked;
       saveToStorage('petData', JSON.stringify(petArr));
       editForm.classList.add('hide');
       renderEditTableData(petArr);
     };
-  });
+  }
 };
+
+
 
 

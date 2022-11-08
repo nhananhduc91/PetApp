@@ -13,7 +13,7 @@ const tableBodyEl = document.getElementById('tbody');
 
 //Get pet list
 let petArr = getFromStorage('petData') ? JSON.parse(getFromStorage('petData')) : [];
-let petArrImport = JSON.parse(getFromStorage('petDataImport'));
+let petArrImport = JSON.parse(getFromStorage('petDataImport')) || [];
 
 //Check if any item of import array is unique
 function checkUniqueIdImport(petId) {
@@ -30,12 +30,16 @@ function checkUniqueIdImport(petId) {
 for (let petImport of petArrImport) {
   if (checkUniqueIdImport(petImport.id)) {
     petArr.push(petImport);
+    saveToStorage('petData', JSON.stringify(petArr));
+    removeFromStorage('petDataImport');
   } else {
     //Replace pet with the same Id
     const index = petArr.findIndex(pet => pet.id === petImport.id)
     petArr[index] = petImport;
+    saveToStorage('petData', JSON.stringify(petArr));
+    removeFromStorage('petDataImport');
   }
-}
+};
 
 renderTableData(petArr);
 

@@ -5,7 +5,7 @@ const submitBreedBtn = document.getElementById('submit-breed');
 const typeSelect = document.getElementById('select-type');
 const tableBreedEl = document.getElementById('breedTable');
 
-let breedArr = getFromStorage('breedData') ? JSON.parse(getFromStorage('breedData')) : [];
+let breedArr = getFromStorage('breedData') ? JSON.parse(getFromStorage('breedData')) : [{ id: "1", name: "Dog 1", type: "Dog" }, { id: "2", name: "Cat 1", type: "Cat" }];
 renderBreedTable(breedArr);
 
 //Submit add breed
@@ -38,7 +38,6 @@ submitBreedBtn.addEventListener('click', function (e) {
     clearInput();
     renderBreedTable(breedArr);
   }
-  console.log(breedData);
 })
 
 //Render breed array
@@ -65,7 +64,11 @@ const deleteBreed = (breedId) => {
   if (confirm(`Are you sure to delete breed ${breedId}?`)) {
     const index = breedArr.findIndex(breed => breed.id === breedId);
     breedArr.splice(index, 1);
-    saveToStorage('breedData', JSON.stringify(breedArr));
+    if (breedArr.length === 0) {
+      removeFromStorage('breedData');
+    } else {
+      saveToStorage('breedData', JSON.stringify(breedArr));
+    }
     renderBreedTable(breedArr);
   }
 };

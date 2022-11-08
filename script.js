@@ -29,7 +29,7 @@ const healthyBtn = document.getElementById('healthy-btn');
 //Render pet list
 let petArr = getFromStorage('petData') ? JSON.parse(getFromStorage('petData')) : [];
 
-let petArrImport = JSON.parse(getFromStorage('petDataImport'));
+let petArrImport = JSON.parse(getFromStorage('petDataImport')) || [];
 
 //Check if any item of import array is unique
 function checkUniqueIdImport(petId) {
@@ -46,16 +46,20 @@ function checkUniqueIdImport(petId) {
 for (let petImport of petArrImport) {
   if (checkUniqueIdImport(petImport.id)) {
     petArr.push(petImport);
+    saveToStorage('petData', JSON.stringify(petArr));
+    removeFromStorage('petDataImport');
   } else {
     //Replace pet with the same Id
     const index = petArr.findIndex(pet => pet.id === petImport.id)
     petArr[index] = petImport;
+    saveToStorage('petData', JSON.stringify(petArr));
+    removeFromStorage('petDataImport');
   }
-}
+};
 
 renderTableData(petArr);
 //Filter breed by type
-let breedList = getFromStorage('breedData') ? JSON.parse(getFromStorage('breedData')) : [];
+let breedList = getFromStorage('breedData') ? JSON.parse(getFromStorage('breedData')) : [{ id: "1", name: "Dog 1", type: "Dog" }, { id: "2", name: "Cat 1", type: "Cat" }];
 const breedDog = breedList.filter(breed => breed.type === 'Dog');
 const breedCat = breedList.filter(breed => breed.type === 'Cat');
 
@@ -220,12 +224,12 @@ const clearInput = () => {
 //Toggle healthy pets and all pets
 healthyBtn.addEventListener('click', function () {
   if (!healthyCheck) {
-    healthyBtn.textContent = 'Show Healthy Pets';
+    healthyBtn.textContent = 'Show All Pets';
     const healthyPetArr = petArr.filter(pet => pet.vaccinated && pet.dewormed && pet.sterilized);
     renderTableData(healthyPetArr);
     healthyCheck = true;
   } else {
-    healthyBtn.textContent = 'Show All Pets';
+    healthyBtn.textContent = 'Show Healthy Pets';
     renderTableData(petArr);
     healthyCheck = false;
   }

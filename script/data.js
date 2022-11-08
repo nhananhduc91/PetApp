@@ -10,7 +10,8 @@ importBtn.addEventListener('click', function () {
     reader.onload = function (e) {
       const petDataImport = e.target.result;
       saveToStorage('petDataImport', petDataImport);
-      alert('Data imported successful!')
+      alert('Data imported successful!');
+      window.location.href = ('../index.html');
     }
     reader.onerror = function () {
       fileContent.innerHTML = "error reading file";
