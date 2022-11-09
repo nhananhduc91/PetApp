@@ -44,18 +44,32 @@ for (let petImport of petArrImport) {
 renderTableData(petArr);
 
 //Filter breed by type
-let breedList = getFromStorage('breedData') ? JSON.parse(getFromStorage('breedData')) : [];
+let breedList = getFromStorage('breedData') ? JSON.parse(getFromStorage('breedData')) : [{ id: "1", name: "Dog 1", type: "Dog" }, { id: "2", name: "Cat 1", type: "Cat" }];
+const breedDog = breedList.filter(breed => breed.type === 'Dog');
+const breedCat = breedList.filter(breed => breed.type === 'Cat');
+
 //Render breed list
 
-function renderBreedList() {
-  for (let breed of breedList) {
+function renderBreedListByType(type) {
+  breedInput.innerHTML = '';
+  for (let breed of type) {
     const option = document.createElement('option');
     option.innerHTML = breed.name;
     breedInput.appendChild(option);
   }
+}
+
+function renderBreedList() {
+  if (typeInput.value === 'Dog') {
+    renderBreedListByType(breedDog);
+  }
+  if (typeInput.value === 'Cat') {
+    renderBreedListByType(breedCat);
+  }
 };
 
-renderBreedList()
+typeInput.addEventListener('input', renderBreedList);
+
 
 //Submit find pet
 findBtn.addEventListener('click', function () {

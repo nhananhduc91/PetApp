@@ -130,38 +130,38 @@ function startEditPet(petId) {
     //Validation input data
     let checkValidated = true;
     //Check empty input field
-    if (petEdit.name.trim() === '' || petEdit.age === '' || petEdit.type === '' || petEdit.weight === ''
-      || petEdit.length === '' || petEdit.color === '' || petEdit.breed === '') {
+    if (nameInput.value.trim() === '' || ageInput.value === '' || typeInput.value === '' || weightInput.value === ''
+      || lengthInput.value === '' || colorInput.value === '' || breedInput.value === '') {
       checkValidated = false;
       alert('Input field must not be empty!')
     } else {
 
       //Validate age
-      if (petEdit.age < 1 || petEdit.age > 15) {
+      if (ageInput.value < 1 || ageInput.value > 15) {
         checkValidated = false;
         alert('Age must be between 1 and 15');
       }
 
       //Validate weight
-      if (petEdit.weight < 1 || petEdit.weight > 15) {
+      if (weightInput.value < 1 || weightInput.value > 15) {
         checkValidated = false;
         alert('Weight must be between 1 and 15');
       }
 
       //Validate length
-      if (petEdit.length < 1 || petEdit.length > 100) {
+      if (lengthInput.value < 1 || lengthInput.value > 100) {
         checkValidated = false;
         alert('Length must be between 1 and 15');
       }
 
       //Validate type
-      if (petEdit.type === '') {
+      if (typeInput.value === '') {
         checkValidated = false;
         alert('Please select Type!');
       }
 
       //Validate breed
-      if (petEdit.breed === '') {
+      if (breedInput.value === '') {
         checkValidated = false;
         alert('Please select Breed!');
       }
